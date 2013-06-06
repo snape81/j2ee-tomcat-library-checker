@@ -47,8 +47,8 @@ public class DirectoryProcess {
     private void processJarList(File jarDirectory, String webappName) throws Exception {
 
 
-        HashMap<String, List<String>> mappaDipendenze = new HashMap<>();
-        HashMap<String, List<String>> mappaVersioni = new HashMap<>();
+        HashMap<String, List<String>> mappaDipendenze = new HashMap<String, List<String>>();
+        HashMap<String, List<String>> mappaVersioni = new HashMap<String, List<String>>();
 
         int prefixLength = 0;
         int jarnameLength = 0;
@@ -58,7 +58,15 @@ public class DirectoryProcess {
             if (jarnameLength < actual.length()) jarnameLength = actual.length();
             String version = JarnameParsingHelper.versionExtractor(actual);
             if (versionLength < version.length()) versionLength = version.length();
-            String prefix = actual.substring(0, actual.indexOf("-"));
+            String prefix = null;
+            try {
+                prefix = actual.substring(0, actual.indexOf("-"));
+            } catch (Exception e) {
+                String errorPrefixCutting = "PREFIX CUTTING - Error with this string " + actual + " -- SKIP MANUALLY CHECK REQUESTED EXCEPTION: " + e.getMessage();
+                System.out.println(errorPrefixCutting);
+                printer.writeln(errorPrefixCutting);
+                continue;
+            }
             if (prefixLength < prefix.length()) prefixLength = prefix.length();
 
             if (mappaDipendenze.get(prefix) == null) {
